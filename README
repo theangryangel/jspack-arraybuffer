@@ -1,10 +1,12 @@
 jspack-arraybuffer
 ==================
-May be buggy/incomplete. Built for and tested with lfswsrelay.js. Patches, etc.
-welcome.
-
 A reimplementation of jspack (http://code.google.com/p/jspack) which uses native
 typed arrays, whilst maintaining a (mostly) compatible API.
+
+May be buggy/incomplete. Built for and tested with lfswsrelay.js
+(https://github.com/theangryangel/lfswsrelay.js). Patches, etc. welcome.
+
+lfswsrelay.js is a good example of usage.
 
 If you're used to using the Python struct module, or PHP's pack and unpack, you
 might prefer this over natively using the ArrayBuffer & DataView APIs.
