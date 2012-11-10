@@ -1,0 +1,62 @@
+jspack-arraybuffer
+==================
+May be buggy/incomplete. Built for lfswsrelay.js. Patches, etc. welcome.
+
+A reimplementation of jspack (http://code.google.com/p/jspack) which uses native
+typed arrays, whilst maintaining a (mostly) compatible API.
+
+If you're used to using the Python struct module, or PHP's pack and unpack, you
+might prefer this over natively using the ArrayBuffer & DataView APIs.
+
+ struct.unpack(format, ArrayBuffer, offset);
+  Returns an array containing values unpacked from the ArrayBuffer, into their
+  native types, begining at offset. If offset is not supplied, it is assumed
+  from offset of 0.
+
+ struct.pack(format, values);
+  Returns an ArrayBuffer with packed values. The ArrayBuffer size is
+  automatically calculated from the supplied format.
+
+ struct.calcLength(format);
+  Returns the necessary size required to fit packed values, according to the
+  supplied format.
+
+ Format is a string, made up of the following table
+   Format | C Type         | JavaScript Type   | Size (bytes) 
+  ------------------------------------------------------------------------------------
+        < | N/A            | N/A               | 0 
+          |                |                   | Signifies little endian.
+          |                |                   | Must be first value in format string
+          |                |                   | If not supplied big endian is assumed
+  ------------------------------------------------------------------------------------
+        A | char[]         | Array             | Length      
+  ------------------------------------------------------------------------------------
+        x | pad byte       | N/A               | 1
+  ------------------------------------------------------------------------------------
+        c | char           | string (length 1) | 1
+  ------------------------------------------------------------------------------------
+        b | signed char    | number            | 1
+  ------------------------------------------------------------------------------------
+        B | unsigned char  | number            | 1
+  ------------------------------------------------------------------------------------
+        h | signed short   | number            | 2
+  ------------------------------------------------------------------------------------
+        H | unsigned short | number            | 2
+  ------------------------------------------------------------------------------------
+        i | signed long    | number            | 4
+  ------------------------------------------------------------------------------------
+        I | unsigned long  | number            | 4
+  ------------------------------------------------------------------------------------
+        l | signed long    | number            | 4
+  ------------------------------------------------------------------------------------
+        L | unsigned long  | number            | 4
+  ------------------------------------------------------------------------------------
+        s | char[]         | string            | Length
+  ------------------------------------------------------------------------------------
+        f | float          | number            | 4
+  ------------------------------------------------------------------------------------
+        d | double         | number            | 8
+
+  For example, to pack a little endian, 32 character string, and 2 unsigned
+  char, the following format will work:
+   "<32sBB"
