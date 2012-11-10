@@ -16,7 +16,7 @@ var common = {
 	{
 		var r = [];
 		for (var i = 0; i < c; i++)
-			r.push(dv[method](offset + i, littlendian));
+			r.push(dv[method](offset + i, littleendian));
 
 		return r;
 	}
@@ -227,7 +227,7 @@ var determineLength = function (fmt)
 	return sum;
 };
 
-var pack = function(fmt, values)
+var pack = function(fmt, values, offset)
 {
 	var littleendian = (fmt.charAt(0) == '<');
 	offset = offset ? offset : 0;
@@ -248,9 +248,11 @@ var pack = function(fmt, values)
 		if ((offset + (c * l)) > ab.length)
 			return;
 
+		var value = values.slice(offset, offset + c);
+
 		magic[m[2]].pack(dv, value, offset, c, littleendian);
 
-		offset += n * l;
+		offset += c * l;
 	}
 
 	return ab;
@@ -279,7 +281,7 @@ var unpack = function(fmt, ab, offset)
 
 		results = results.concat(magic[m[2]].unpack(dv, offset, c, littleendian));
 
-		offset += n * l;
+		offset += c * l;
 	}
 
 	return results;
@@ -292,7 +294,7 @@ return {
 
 	// jspack compatible API
 	Pack: pack,
-	Unpack: Unpack,
+	Unpack: unpack,
 	CalcLength: determineLength
 };
 
