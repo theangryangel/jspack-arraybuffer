@@ -172,11 +172,14 @@ var magic = {
 		length: 1, 
 		pack: function(dv, value, offset, c, littleendian)
 		{
+			var val = new String(value[0]);
+
 			for (var i = 0; i < c; i++)
 			{
 				var code = 0;
-				if (i < value.length)
-					code = value.charCodeAt(i);
+
+				if (i < val.length)
+					code = val.charCodeAt(i);
 
 				dv.setUint8(offset + i, code);
 			}
@@ -235,7 +238,7 @@ var pack = function(fmt, values, offset)
 	var ab = new ArrayBuffer(determineLength(fmt)),
 		dv = new DataView(ab),
 		re = new RegExp(pattern, 'g'),
-		m, c, l;
+		m, c, l, i = 0;
 
 	while (m = re.exec(fmt))
 	{
@@ -248,11 +251,12 @@ var pack = function(fmt, values, offset)
 		if ((offset + (c * l)) > ab.length)
 			return;
 
-		var value = values.slice(offset, offset + c);
+		var value = values.slice(i, i + 1);
 
 		magic[m[2]].pack(dv, value, offset, c, littleendian);
 
 		offset += c * l;
+		i += 1;
 	}
 
 	return ab;
@@ -273,7 +277,7 @@ var unpack = function(fmt, ab, offset)
 		if (magic[m[2]] == undefined)
 			throw new Error('Unknown format type');
 		
-		c = ((m[1]==undefined) || (m[1]=='')) ? 1 : parseInt(m[1]);
+		c = ((m[1] == undefined) || (m[1] == '')) ? 1 : parseInt(m[1]);
 		l = magic[m[2]].length;
 
 		if ((offset + (c * l)) > ab.length)
