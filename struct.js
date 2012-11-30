@@ -1,8 +1,7 @@
-var struct = function()
+(function()
 {
 
-var pattern = '(\\d+)?([AxcbBhHsfdiIlL])';
-
+// utility pack and unpack functions to simplify magic
 var common = {
 	pack: function(method, dv, value, offset, c, littleendian)
 	{
@@ -22,6 +21,7 @@ var common = {
 	}
 };
 
+// pack and unpacking for different types
 var magic = {
 	// byte array
 	A : {
@@ -220,6 +220,10 @@ var magic = {
 	}
 };
 
+// pattern of stuff we're looking for
+var pattern = '(\\d+)?([AxcbBhHsfdiIlL])';
+
+// determine the size of arraybuffer we'd need
 var determineLength = function (fmt)
 {
 	var re = new RegExp(pattern, 'g'), m, sum = 0;
@@ -230,6 +234,7 @@ var determineLength = function (fmt)
 	return sum;
 };
 
+// pack a set of values, starting at offset, based on format
 var pack = function(fmt, values, offset)
 {
 	var littleendian = (fmt.charAt(0) == '<');
@@ -262,6 +267,8 @@ var pack = function(fmt, values, offset)
 	return ab;
 };
 
+// unpack an arraybuffer, starting at offset, based on format
+// returns an array
 var unpack = function(fmt, ab, offset)
 {
 	var littleendian = (fmt.charAt(0) == '<'),
@@ -291,7 +298,8 @@ var unpack = function(fmt, ab, offset)
 	return results;
 };
 
-return {
+// external API
+var struct = {
 	pack: pack,
 	unpack: unpack,
 	calcLength: determineLength,
@@ -302,4 +310,10 @@ return {
 	CalcLength: determineLength
 };
 
-}();
+// publishing to the outside world
+if (typeof module !== 'undefined' && module.exports)
+	module.exports = struct;
+else
+	this.struct = struct;
+
+}).call(this);
